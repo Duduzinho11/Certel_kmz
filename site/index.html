@@ -11,11 +11,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
 
     <style>
-        /* --- DESIGN SYSTEM (Estilo iOS) --- */
+        /* --- DESIGN SYSTEM (iOS Clean) --- */
         :root {
-            --primary: #0044CC; /* Azul Certel mais vibrante */
-            --success: #34C759; /* Verde iOS */
-            --bg: #F2F2F7;      /* Fundo iOS */
+            --primary: #0044CC;
+            --success: #34C759;
+            --danger: #FF3B30;
+            --bg: #F2F2F7;
             --card: #FFFFFF;
             --text-main: #1C1C1E;
             --text-sub: #8E8E93;
@@ -30,137 +31,102 @@
             user-select: none;
         }
 
-        /* --- TELA DE LOGIN (Glassmorphism) --- */
-        #login-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #0044CC 0%, #002a80 100%);
-            z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        
-        .login-card {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 30px;
-            border-radius: 24px;
-            width: 80%; max-width: 320px;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .login-logo { font-size: 40px; margin-bottom: 10px; }
-        .login-title { color: white; font-size: 20px; font-weight: 700; margin-bottom: 5px; letter-spacing: 0.5px; }
-        .login-sub { color: rgba(255,255,255,0.8); font-size: 13px; margin-bottom: 20px; }
-
-        .input-ios {
-            width: 100%; padding: 16px; border-radius: 14px;
-            border: none; background: rgba(255,255,255,0.9);
-            font-size: 17px; text-align: center; margin-bottom: 15px;
-            box-sizing: border-box; outline: none;
-        }
-
-        .btn-ios-primary {
-            width: 100%; padding: 16px; border-radius: 14px;
-            border: none; background: var(--success);
-            color: white; font-size: 17px; font-weight: 600;
-            cursor: pointer; transition: transform 0.1s;
-        }
-        .btn-ios-primary:active { transform: scale(0.96); opacity: 0.9; }
-
-        /* --- APP PRINCIPAL --- */
-        #app-content { display: none; padding-bottom: 40px; }
+        /* --- LAYOUT PRINCIPAL --- */
+        #app-content { display: block; padding-bottom: 40px; }
 
         .header {
             background: var(--card);
-            padding: 50px 20px 15px 20px; /* Topo maior para ignorar o notch do iPhone */
+            padding: 50px 20px 15px 20px; /* Topo maior para o notch */
             border-bottom-left-radius: 24px;
             border-bottom-right-radius: 24px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             margin-bottom: 20px;
             text-align: center;
         }
-
-        .header h1 { margin: 0; font-size: 22px; color: var(--primary); }
+        .header h1 { margin: 0; font-size: 22px; color: var(--primary); letter-spacing: -0.5px; }
         .header p { margin: 5px 0 0 0; font-size: 13px; color: var(--text-sub); }
 
         .container { padding: 0 20px; }
 
-        /* Status Card */
+        /* CARD DE STATUS */
         .status-card {
-            background: var(--card); border-radius: 20px; padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px;
+            background: var(--card); border-radius: 20px; padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 20px;
             text-align: center;
         }
 
-        .status-badge {
-            background: #E8F2FF; color: var(--primary);
-            padding: 6px 12px; border-radius: 20px;
-            font-size: 12px; font-weight: 700; text-transform: uppercase;
-            display: inline-block; margin-bottom: 10px;
-        }
-
+        /* BOTÃO DE IMPORTAR (CORRIGIDO E BONITO) */
         .import-area {
-            border: 2px dashed #D1D1D6; border-radius: 16px;
-            padding: 25px; margin-top: 15px; position: relative;
-            background: #FAFAFC; transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #F5F7FA;
+            border: 2px dashed #0044CC;
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            box-sizing: border-box; /* Garante que não estoure a tela */
         }
-        .import-area:active { background: #E5E5EA; }
+        
+        .import-area:active { transform: scale(0.98); background-color: #E8F0FE; }
+
+        .import-icon { font-size: 36px; margin-bottom: 10px; }
+        .import-text { color: var(--primary); font-weight: 700; font-size: 16px; }
+        .import-sub { font-size: 12px; color: var(--text-sub); margin-top: 5px; }
         
         #file-input { display: none; }
-        
-        .import-label {
-            display: flex; flex-direction: column; align-items: center; gap: 8px;
-            color: var(--primary); font-weight: 600; font-size: 15px;
-        }
 
-        /* Grid de Menu */
+        /* GRID DE MENU */
         .grid-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
         .menu-btn {
             background: var(--card); border: none; padding: 20px;
             border-radius: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            display: flex; flex-direction: column; align-items: center; gap: 10px;
-            font-size: 14px; font-weight: 600; color: var(--text-main);
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            font-size: 15px; font-weight: 600; color: var(--text-main);
             transition: 0.2s;
         }
-        .menu-btn:active { transform: scale(0.95); background: #F2F2F7; }
+        .menu-btn:active { transform: scale(0.96); background: #E5E5EA; }
         .menu-icon { font-size: 28px; }
 
-        /* Lista */
+        /* LISTA */
         .search-bar {
-            position: sticky; top: 10px; z-index: 100;
-            margin: 0 20px 15px 20px;
-            background: rgba(255,255,255,0.9);
+            position: sticky; top: 0; z-index: 100;
+            padding: 10px 20px 15px 20px;
+            background: rgba(242, 242, 247, 0.95); /* Cor do fundo com blur */
             backdrop-filter: blur(10px);
-            border-radius: 14px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
+        
         .search-input {
             width: 100%; padding: 14px 20px; border: none;
-            background: transparent; font-size: 16px; outline: none;
+            background: #E3E3E8; border-radius: 12px;
+            font-size: 16px; outline: none; color: var(--text-main);
+            box-sizing: border-box;
         }
 
         .list-container { padding: 0 20px; }
         
         .list-item {
-            background: var(--card); padding: 16px; margin-bottom: 10px;
+            background: var(--card); padding: 18px; margin-bottom: 12px;
             border-radius: 16px; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
         
-        .item-info b { display: block; font-size: 16px; margin-bottom: 4px; }
+        .item-info b { display: block; font-size: 17px; margin-bottom: 4px; color: var(--text-main); }
         .item-info span { font-size: 13px; color: var(--text-sub); }
 
         .btn-nav {
             background: #E8F2FF; color: var(--primary);
-            width: 40px; height: 40px; border-radius: 50%;
+            width: 44px; height: 44px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 18px; border: none; cursor: pointer;
+            font-size: 20px; border: none; cursor: pointer;
         }
 
-        /* Loader */
+        /* LOADER */
         .loader-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255,255,255,0.95); z-index: 2000;
@@ -172,58 +138,39 @@
             animation: spin 0.8s linear infinite; margin-bottom: 20px;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
     </style>
 </head>
 <body>
-
-    <div id="login-screen">
-        <div class="login-card">
-            <div class="login-logo">⚡</div>
-            <div class="login-title">Rede Certel</div>
-            <div class="login-sub">Acesso Técnico</div>
-            
-            <input type="password" id="senha-input" class="input-ios" placeholder="Senha da Equipe">
-            <button class="btn-ios-primary" onclick="tentarLogin()">Entrar</button>
-            <div id="erro-msg" style="color: #ffcccb; font-size: 13px; margin-top: 15px; display: none;">Senha incorreta</div>
-        </div>
-    </div>
 
     <div id="app-content">
         
         <div class="header">
             <h1>Rede Certel</h1>
-            <p>Consulta de Ativos Offline</p>
+            <p>Mapa de Ativos Offline</p>
         </div>
 
         <div id="loader" class="loader-overlay">
             <div class="spinner"></div>
-            <div style="font-weight: 600; color: var(--text-main);">Processando Arquivo...</div>
-            <div style="font-size: 13px; color: var(--text-sub); margin-top: 5px;">Isso pode levar até 1 minuto.</div>
+            <div style="font-weight: 600; color: var(--text-main);">Processando...</div>
+            <div style="font-size: 13px; color: var(--text-sub); margin-top: 5px;">Aguarde alguns segundos.</div>
         </div>
 
         <div id="view-home" class="container">
             
             <div class="status-card">
-                <span class="status-badge">Base de Dados</span>
-                <div id="status-text" style="font-size: 24px; font-weight: 700; color: var(--primary); margin: 10px 0;">
-                    Vazia
-                </div>
-                <div id="status-sub" style="font-size: 13px; color: var(--text-sub);">
-                    Nenhum arquivo carregado
-                </div>
+                <div style="font-size: 12px; color: #8E8E93; text-transform: uppercase; font-weight: 600;">Status da Base</div>
+                <div id="status-text" style="font-size: 26px; font-weight: 700; color: var(--text-main); margin: 6px 0;">Vazia</div>
+                <div id="status-sub" style="font-size: 14px; color: var(--text-sub); margin-bottom: 15px;">Nenhum dado</div>
 
-                <label class="import-area">
-                    <input type="file" id="file-input" accept=".kml,.kmz" onchange="processarArquivo(this)">
-                    <div class="import-label">
-                        <span style="font-size: 24px;">📂</span>
-                        <span>Abrir Arquivo da Rede</span>
-                        <span style="font-size: 11px; color: #8E8E93; font-weight: 400;">Suporta .KMZ e .KML (80MB+)</span>
-                    </div>
+                <label for="file-input" class="import-area">
+                    <span class="import-icon">📂</span>
+                    <span class="import-text">Abrir Arquivo da Rede</span>
+                    <span class="import-sub">Toque aqui para selecionar o KMZ/KML</span>
                 </label>
+                <input type="file" id="file-input" accept=".kml,.kmz" onchange="processarArquivo(this)">
 
-                <div onclick="resetarApp()" style="margin-top: 15px; font-size: 12px; color: #FF3B30; cursor: pointer;">
-                    Limpar dados e Sair
+                <div onclick="resetarApp()" style="margin-top: 25px; font-size: 13px; color: var(--danger); cursor: pointer; font-weight: 500;">
+                    🗑️ Limpar dados e Resetar
                 </div>
             </div>
 
@@ -249,8 +196,8 @@
             </div>
             
             <div style="padding: 0 20px 10px 20px; display: flex; align-items: center; gap: 10px;">
-                <button onclick="voltar()" style="background: none; border: none; font-size: 16px; color: var(--primary); font-weight: 600;">← Voltar</button>
-                <span id="titulo-cat" style="font-weight: 700; font-size: 18px; margin-left: auto;">Lista</span>
+                <button onclick="voltar()" style="background: none; border: none; font-size: 17px; color: var(--primary); font-weight: 600;">← Voltar</button>
+                <span id="titulo-cat" style="font-weight: 700; font-size: 20px; margin-left: auto; color: var(--text-main);">Lista</span>
             </div>
 
             <div id="lista-container" class="list-container"></div>
@@ -259,55 +206,43 @@
     </div>
 
 <script>
-    // --- CONFIGURAÇÃO ---
-    const SENHA_ACESSO = "certel2024"; 
     let dbAtivos = [];
     let filtroAtual = "";
 
-    // --- 1. AUTENTICAÇÃO ---
-    function tentarLogin() {
-        const pass = document.getElementById('senha-input').value;
-        if(pass === SENHA_ACESSO) {
-            localStorage.setItem('auth_token', 'ok');
-            iniciarSistema();
-        } else {
-            document.getElementById('erro-msg').style.display = 'block';
-        }
-    }
-
-    function iniciarSistema() {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('app-content').style.display = 'block';
+    // --- 1. INICIALIZAÇÃO AUTOMÁTICA (Sem Login) ---
+    window.onload = () => {
         carregarDoBanco();
-    }
+    };
 
-    if(localStorage.getItem('auth_token') === 'ok') {
-        iniciarSistema();
-    }
-
-    // --- 2. BANCO DE DADOS (LocalForage) ---
     async function carregarDoBanco() {
         localforage.config({ name: 'CertelApp', storeName: 'ativos' });
         
-        const total = await localforage.getItem('total');
-        const data = await localforage.getItem('data_importacao');
+        try {
+            const total = await localforage.getItem('total');
+            const data = await localforage.getItem('data_importacao');
 
-        if(total && total > 0) {
-            atualizarStatus(total, data);
-            // Carrega em background para não travar animação
-            setTimeout(async () => {
-                dbAtivos = await localforage.getItem('lista') || [];
-            }, 300);
+            if(total && total > 0) {
+                atualizarStatus(total, data);
+                // Carrega em background
+                setTimeout(async () => {
+                    dbAtivos = await localforage.getItem('lista') || [];
+                }, 200);
+            }
+        } catch (e) {
+            console.log("Banco vazio ou erro:", e);
         }
     }
 
     function atualizarStatus(qtd, data) {
-        document.getElementById('status-text').innerText = parseInt(qtd).toLocaleString();
-        document.getElementById('status-text').style.color = "var(--success)";
-        document.getElementById('status-sub').innerText = "Atualizado em: " + data;
+        const elText = document.getElementById('status-text');
+        const elSub = document.getElementById('status-sub');
+        
+        elText.innerText = parseInt(qtd).toLocaleString();
+        elText.style.color = "var(--success)";
+        elSub.innerText = "Atualizado em: " + data;
     }
 
-    // --- 3. PROCESSAMENTO DE ARQUIVO (ENGINE) ---
+    // --- 2. PROCESSAMENTO (Engine) ---
     async function processarArquivo(input) {
         const file = input.files[0];
         if(!file) return;
@@ -317,27 +252,27 @@
         try {
             let texto = "";
             
-            // Verifica se é KMZ (Zip)
+            // Suporte a KMZ (Zip)
             if(file.name.toLowerCase().endsWith(".kmz")) {
                 const zip = await JSZip.loadAsync(file);
                 const kmlName = Object.keys(zip.files).find(n => n.toLowerCase().endsWith(".kml"));
-                if(!kmlName) throw new Error("Arquivo KML não encontrado dentro do KMZ");
+                if(!kmlName) throw new Error("KML não encontrado no ZIP");
                 texto = await zip.files[kmlName].async("string");
             } else {
                 texto = await file.text();
             }
 
-            // Limpa namespaces para facilitar
+            // Limpa sufixos de namespace para facilitar o regex
             texto = texto.replace(/<(\w+):/g, "<").replace(/<\/(\w+):/g, "</");
 
-            // Inicia Scanner
+            // Roda o Scanner
             setTimeout(() => executarScanner(texto), 100);
 
         } catch(e) {
             alert("Erro ao ler arquivo: " + e.message);
             mostrarLoader(false);
         }
-        input.value = ""; // Reseta input
+        input.value = ""; // Reseta o input para permitir selecionar o mesmo arquivo
     }
 
     async function executarScanner(xml) {
@@ -354,7 +289,6 @@
 
                 const bloco = xml.substring(inicio, fim);
                 
-                // Regex super rápida local
                 const matchNome = bloco.match(/<name[\s\S]*?>([\s\S]*?)<\/name>/i);
                 const matchCoord = bloco.match(/<coordinates[\s\S]*?>([\s\S]*?)<\/coordinates>/i);
 
@@ -362,7 +296,7 @@
                     let nome = matchNome[1].replace(/<!\[CDATA\[|\]\]>/g, "").trim();
                     let coordRaw = matchCoord[1].replace(/<!\[CDATA\[|\]\]>/g, "").trim();
                     
-                    // Pega primeira coordenada válida
+                    // Pega primeira coordenada
                     const coordPair = coordRaw.split(/\s+/)[0].split(',');
                     
                     if(coordPair.length >= 2) {
@@ -374,8 +308,9 @@
 
             if(novos.length === 0) throw new Error("Nenhum dado encontrado.");
 
-            // Salva
             const hoje = new Date().toLocaleDateString('pt-BR');
+            
+            // Salva no IndexedDB
             await localforage.setItem('lista', novos);
             await localforage.setItem('total', novos.length);
             await localforage.setItem('data_importacao', hoje);
@@ -383,7 +318,7 @@
             dbAtivos = novos;
             atualizarStatus(novos.length, hoje);
             mostrarLoader(false);
-            alert("Sucesso! " + novos.length + " pontos importados.");
+            alert("Sucesso! Base importada.");
 
         } catch(e) {
             console.error(e);
@@ -392,10 +327,10 @@
         }
     }
 
-    // --- 4. LISTAGEM E NAVEGAÇÃO ---
+    // --- 3. UI E NAVEGAÇÃO ---
     function abrirCategoria(tipo) {
         if(dbAtivos.length === 0) {
-            alert("Importe o arquivo primeiro!");
+            alert("Por favor, abra o arquivo da rede primeiro.");
             return;
         }
         filtroAtual = tipo;
@@ -411,7 +346,7 @@
         const container = document.getElementById('lista-container');
         container.innerHTML = "";
 
-        // Filtra e pega top 50
+        // Filtra e limita a 50 para performance
         const resultados = dbAtivos.filter(item => {
             const nome = item.n.toUpperCase();
             let tipoOk = false;
@@ -424,7 +359,7 @@
         }).slice(0, 50);
 
         if(resultados.length === 0) {
-            container.innerHTML = "<div style='text-align:center; padding:20px; color:#8E8E93;'>Nenhum resultado</div>";
+            container.innerHTML = "<div style='text-align:center; padding:30px; color:#8E8E93;'>Nenhum resultado encontrado</div>";
             return;
         }
 
@@ -443,8 +378,16 @@
     }
 
     function abrirMapa(lat, lng) {
-        // Abre Apple Maps no iPhone ou Google Maps no Android
-        window.open(`maps://?q=${lat},${lng}`, '_system');
+        // Detecta se é iOS (iPhone/iPad)
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        
+        if (isIOS) {
+            // Abre Apple Maps
+            window.open(`maps://?q=${lat},${lng}`, '_system');
+        } else {
+            // Abre Google Maps (Android/PC)
+            window.open(`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`, '_system');
+        }
     }
 
     function voltar() {
@@ -457,13 +400,11 @@
     }
 
     async function resetarApp() {
-        if(confirm("Deseja apagar os dados e sair?")) {
+        if(confirm("Deseja realmente apagar a base de dados?")) {
             await localforage.clear();
-            localStorage.removeItem('auth_token');
             location.reload();
         }
     }
-
 </script>
 
 <link rel="manifest" href="manifest.json">
