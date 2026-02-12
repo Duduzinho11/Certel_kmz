@@ -1,4 +1,4 @@
-const CACHE_NAME = 'certel-pro-v3'; // Mudei a versão para forçar atualização
+const CACHE_NAME = 'certel-pro-v4'; // Mudei a versão para forçar atualização
 const ASSETS = [
   './',
   './index.html',
@@ -20,3 +20,4 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   e.respondWith(caches.match(e.request).then((res) => res || fetch(e.request)));
 });
+
