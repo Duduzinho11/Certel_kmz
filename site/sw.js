@@ -1,4 +1,4 @@
-const CACHE_NAME = 'certel-app-v1';
+const CACHE_NAME = 'certel-pro-v3'; // Mudei a versão para forçar atualização
 const ASSETS = [
   './',
   './index.html',
